@@ -1,0 +1,148 @@
+<section class="container sec">
+
+  {{#if product}}
+ <h1>Edit Product</h1>
+ 
+  {{else}}
+  <h1>Add Product</h1>
+  {{/if}}
+    <form class="row g-3" method="post" enctype="multipart/form-data">
+    
+  <div class="col-md-6">
+    <label for="name" class="form-label">Name</label>
+    <input value="{{product.name}}" autocomplete="off" type="text" class="form-control"  id="name" name="name">
+  </div>
+  <div class="col-md-6">
+    <label for="mrp" class="form-label">Price</label>
+    <input value="{{product.mrp}}" autocomplete="off" type="number"  class="form-control" id="mrp" name="mrp" min="0" oninput="this.value = this.value.replace(/[^0-9]/g, ''); ">
+    <small class="text-danger">* The total cost will be calculated, incorporating an 18% GST.</small>
+  </div>
+  {{#if product}} <div class="col-md-6">
+    <label for="discount" class="form-label">Discount</label>
+    <input value="{{product.discount}}" autocomplete="off" type="number" class="form-control" id="discount" name="discount" min="0" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+  </div>
+  
+  <div class="col-md-6">
+    <label for="shipping" class="form-label">Shipping Charge</label>
+    <input value="{{product.ShippingCharge}}" autocomplete="off" type="number" class="form-control" id="shipping" name="shipping" min="0" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+  </div>
+  {{else}}
+
+   <div class="col-md-6">
+    <label for="discount" class="form-label">Discount</label>
+    <input value="0" autocomplete="off" type="number" class="form-control" id="discount" name="discount" min="0" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+  </div>
+  
+  <div class="col-md-6">
+    <label for="shipping" class="form-label">Shipping Charge</label>
+    <input value="0" autocomplete="off" type="number" class="form-control" id="shipping" name="shipping" min="0" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+  </div>
+  
+  {{/if}}
+ 
+  <div class="col-md-6">
+    <label for="total" class="form-label">Total Amount</label>
+    <input value="{{product.TotalAmount}}" autocomplete="off" type="number" class="form-control" id="total" name="total" readonly>
+    <small class="text-danger">* The Total price, with 18% GST and Shipping Charge, will be calculated.</small>
+    <br>
+    <small class="text-secondary">* This field is not editable</small>
+  </div>
+
+  <input type="hidden" name="id" value="{{product._id}}" id="">
+  {{#each product.image}}
+  <div class="col-md-2">
+  <img style="width: 80px; height: 80px; border: 1px solid #ccc; margin: 5px;" src="productImage/{{this}}">
+  </div>
+  {{/each}}
+  {{#if product.image}}
+  {{#each product.image }}
+ <div id="inputContainer">
+  <div class="input-group mb-3 col-md-6">
+    
+    <input autocomplete="off" value="{{this}}" type="file" name="image" class="form-control" id="inputGroupFile01">
+    <a class="btn btn-success" id="addInputButton">+</a>
+  </div>
+</div>
+{{/each}}
+{{else}}
+<div id="inputContainer">
+  <div class="input-group mb-3 col-md-6">
+    
+    <input autocomplete="off" value="{{this}}" type="file" name="image" class="form-control" id="inputGroupFile01">
+    <a class="btn btn-success" id="addInputButton">+</a>
+  </div>
+</div>
+{{/if}}
+
+ 
+  
+  <div class="col-12">
+    <div class="form-check">
+        <label for="description">Description </label>
+     <textarea autocomplete="off" class="form-control" id="description" name="description" aria-label="With textarea">{{product.description}}</textarea>
+    </div>
+  </div>
+  <div class="col-12">
+    <button type="submit" class="btn btn-primary">Upload Product</button>
+  </div>
+</form>
+</section>
+
+<script>
+  const container = document.getElementById('inputContainer');
+  const addButton = document.getElementById('addInputButton');
+  
+  addButton.addEventListener('click', () => {
+    // Create a new div for the input group
+    const newInputGroup = document.createElement('div');
+    newInputGroup.className = 'input-group mb-3 col-md-6';
+    
+    // Create a label element
+    const newLabel = document.createElement('label');
+
+    // Create a new input element
+    const newInput = document.createElement('input');
+    newInput.type = 'file';
+    newInput.name= 'image';
+    newInput.className = 'form-control';
+    newInput.id = `inputGroupFile${container.children.length}`;
+    
+    // Append the label and input to the new input group
+    newInputGroup.appendChild(newLabel);
+    newInputGroup.appendChild(newInput);
+    
+    // Append the new input group to the container
+    container.appendChild(newInputGroup);
+  }
+  );
+// Retrieve the necessary elements
+const priceInput = document.getElementById('mrp');
+const discountInput = document.getElementById('discount');
+const shippingInput = document.getElementById('shipping');
+const totalInput = document.getElementById('total');
+
+// Add event listeners to the input fields
+priceInput.addEventListener('input', calculateTotal);
+discountInput.addEventListener('input', calculateTotal);
+shippingInput.addEventListener('input', calculateTotal);
+
+// Function to calculate the total amount
+function calculateTotal() {
+  // Retrieve the values from the input fields
+  const price = parseInt(priceInput.value);
+  const discount = parseInt(discountInput.value);
+  const shipping = parseInt(shippingInput.value);
+
+  // Calculate the total amount
+  const gst = 0.18; // 18% GST
+  const gstAmount = price * gst;
+  const discountPercent = discount / 100
+  console.log(discountPercent)
+  const discountedPrice = price * discountPercent;
+  const totalAmount = price + gstAmount + shipping - discountedPrice
+
+  // Set the calculated total amount in the input field
+  totalInput.value = totalAmount.toFixed(2); // Adjust the decimal places as needed
+}
+
+</script>

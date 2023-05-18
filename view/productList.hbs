@@ -1,0 +1,48 @@
+<section class="container sec">
+  <h1 style="position: relative;">Product List</h1>
+  <a type="button" class="btn btn-success mt-5" href="/addProduct">Add Product</a>
+  <table class="table table-striped table-hover table-bordered">
+   {{#if product}}
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name </th>
+        <th scope="col">MRP</th>
+        <th scope="col">Discount</th>
+        <th scope="col">Shipping Charge</th>
+        <th scope="col">Total Amount</th>
+        <th scope="col">Description</th>
+        <th></th>
+        <th></th>
+
+      </tr>
+    </thead>
+    {{else}}
+    <h1>No products</h1>
+    {{/if}}
+    <tbody>
+      {{#each product}}
+      <tr>
+        <th scope="row">{{@index}}</th>
+        <td>
+          {{name}}
+          {{#each image}}
+          <img style="width: 80px; height: 80px; border: 1px solid #ccc; margin: 5px;" src="productImage/{{this}}">
+          {{/each}}
+        </td>
+
+        <td>{{mrp}}</td>
+        <td>{{discount}}</td>
+        <td>{{ShippingCharge}}</td>
+        <td>{{TotalAmount}}</td>
+        <td>description</td>
+        <td><a type="button" href="/editProduct?id={{_id}}" class="btn btn-primary">Edit</a>
+</td>
+    <td><a type="button" href="/delete?id={{_id}}" class="btn btn-danger">Delete</a>
+</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+
+</section>
